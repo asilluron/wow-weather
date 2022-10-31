@@ -77,9 +77,11 @@
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.8",
     "aws-lambda": "^1.0.7",
     "core-js": "^3.26.0",
+    "random-js": "^2.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "regenerator-runtime": "^0.13.10",
-    "source-map-support": "^0.5.21"
+    "source-map-support": "^0.5.21",
+    "uuid": "^9.0.0"
   }
 }

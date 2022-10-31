@@ -1,5 +1,8 @@
 import "source-map-support/register";
 import { Context, APIGatewayEvent, APIGatewayProxyResultV2 } from "aws-lambda";
+import otpHandler from './handlers/otp';
+
+export const otp = otpHandler;
 
 export const serve = async (event: APIGatewayEvent, _context: Context): Promise<APIGatewayProxyResultV2> => {
   try {

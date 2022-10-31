@@ -56,8 +56,15 @@ functions:
           path: /{any+}
           method: any
           cors: true
+  otp:
+    events: 
+      - httpApi: 'POST /otp'
+    handler: handler.otp
+    environment:
+      OTP_TABLE: ${self:custom.tableNameOTP}
 
 custom:
+  tableNameOTP: ${self:provider.stage}-otp
   distBucketUrl:
     us-east-1:
       # us-east-1 uses a different URL format than the other regions
@@ -105,6 +112,23 @@ custom:
 
 resources:
   Resources:
+    OTPTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableNameOTP}
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+        # Making sure we stay cost effective for my personal account
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TimeToLiveSpecification: 
+          AttributeName: expires,
+          Enabled: TRUE
     # Customize the API Gateway resource
     ApiGatewayRestApi:
       Type: AWS::ApiGateway::RestApi
