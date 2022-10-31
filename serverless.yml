@@ -62,6 +62,12 @@ functions:
     handler: handler.otp
     environment:
       OTP_TABLE: ${self:custom.tableNameOTP}
+  otpConfirm:
+    events: 
+      - httpApi: 'POST /otp-confirm'
+    handler: handler.otpConfirm
+    environment:
+      OTP_TABLE: ${self:custom.tableNameOTP}
 
 custom:
   tableNameOTP: ${self:provider.stage}-otp

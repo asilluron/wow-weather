@@ -42,7 +42,7 @@ const sendEmail = (to: string, subject: string, message: string, from: any) => {
     });
 };
 
-export default async (event: any, context: any, callback: any) => {
+export default (event: any, context: any, callback: any) => {
     const token = generateToken();
     const message = `${token} - WOW Weather OTP`;
     let resolve: any, reject: any; // Promisify this better
@@ -78,7 +78,7 @@ export default async (event: any, context: any, callback: any) => {
             created: isoTimestamp,
             expires: ttl
         }
-    }, (err: Error, data: any) => {
+    }, (err: Error) => {
         if (err) {
             console.error(err.message);
             const errMsg = JSON.stringify(err.message);
