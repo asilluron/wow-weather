@@ -64,9 +64,9 @@ export default async (event: any) => {
 
 
 
-        const ipResult = await axios.get(`http://ip-api.com/json/${currentIp}`);
+        const ipResult = await axios.get(`http://ip-api.com/json/${currentIp.trim()}`);
         if (ipResult.data.status === 'fail') {
-            throw new Error('Invalid IP');
+            throw new Error(`Invalid IP: ${JSON.stringify(ipResult.data)}'\ncurrentIp: ${currentIp}`);
         }
         const ipData = ipResult.data;
         const { lat, lon } = ipData;
