@@ -17,6 +17,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _App_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_App_css__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @mui/material/Button */ "./node_modules/@mui/material/esm/Button/Button.js");
+/* harmony import */ var _mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @mui/material/TextField */ "./node_modules/@mui/material/esm/TextField/TextField.js");
+
+
+
 
 
 
@@ -24,15 +30,100 @@ __webpack_require__.r(__webpack_exports__);
  * Our Web Application
  */
 function App() {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", {
+  const [waitingForOtp, setWaitingForOtp] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false); // Are we waiting for an OTP? If so, show the OTP input field
+  const [loading, setLoading] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false); // Are we loading? If so, show a loading spinner
+  const [email, setEmail] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(''); // The email address entered by the user
+  const [token, setToken] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(''); // The token returned by the server
+  const [auth, setAuth] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const [data, setData] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({
+    poster: '',
+    full_line: '',
+    forecast: ''
+  });
+  const sendOTP = async () => {
+    setLoading(true); // Show the loading spinner
+    try {
+      await axios__WEBPACK_IMPORTED_MODULE_2__["default"].post(`/otp`, {
+        email
+      });
+      setWaitingForOtp(true); // Show the OTP input field
+
+      setLoading(false); // Hide the loading spinner
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+      // Show a snackbar or something
+    }
+  };
+
+  const login = async () => {
+    try {
+      const response = await axios__WEBPACK_IMPORTED_MODULE_2__["default"].post(`/otp-confirm`, {
+        email,
+        token
+      });
+      if (response.status === 200) {
+        setAuth(true); // Show the OTP input field
+        setData(response.data);
+      }
+      setLoading(false); // Hide the loading spinner
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+      // Show a snackbar or something
+    }
+  };
+
+  if (loading) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+      className: "App"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("img", {
+      src: "https://media.giphy.com/media/QCCy7ynj6LynjTCO1h/giphy.gif"
+    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", null, "Sending OTP to Email or Getting Weather"));
+  }
+  if (auth) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+      className: "App"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("header", {
+      className: "App-header"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("h1", {
+      className: "App-title"
+    }, "Owen Wilson Weather Generator")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
+      className: "weather-container"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("img", {
+      className: "weather-image",
+      src: data.poster
+    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", {
+      className: "weather-quote"
+    }, data.full_line), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", {
+      className: "weather-forecast"
+    }, data.forecast)));
+  }
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", {
     className: "App"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("header", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("header", {
     className: "App-header"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("h1", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("h1", {
     className: "App-title"
-  }, "Owen Wilson Weather Generator")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1__.createElement("p", {
+  }, "Owen Wilson Weather Generator")), !waitingForOtp ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement((react__WEBPACK_IMPORTED_MODULE_1___default().Fragment), null, " ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("p", {
     className: "App-intro"
-  }, "wow"));
+  }, "Enter your email address to get your weather forecast."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    onInput: e => setEmail(e.target.value),
+    required: true,
+    id: "outlined-required",
+    label: "Email Address"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_mui_material_Button__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    onClick: () => sendOTP(),
+    variant: "contained"
+  }, "Submit")) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement((react__WEBPACK_IMPORTED_MODULE_1___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_mui_material_TextField__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    onInput: e => setToken(e.target.value),
+    required: true,
+    id: "outlined-required",
+    label: "OTP from Email"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default().createElement(_mui_material_Button__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    onClick: () => login(),
+    variant: "contained"
+  }, "Submit"))));
 }
 
 /***/ }),

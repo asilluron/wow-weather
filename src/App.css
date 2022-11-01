@@ -22,6 +22,32 @@
     font-size: large;
 }
 
+.weather-image {
+    object-fit: cover;
+}
+
+.weather-quote {
+    color: #fff;
+    position: absolute;
+    top: 20%;
+    right: 20%;
+    font-size: 44px;
+}
+
+.weather-forecast {
+    color: #fff;
+    font-size: 24px;
+    top: 50%;
+    left: 20%;
+    position: absolute;
+}
+
+.weather-container {
+    width: 100%;
+    height: 100%;
+}
+
+
 @keyframes App-logo-spin {
     from {
         transform: rotate(0deg);
