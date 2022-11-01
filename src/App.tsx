@@ -22,7 +22,8 @@ export default function App() {
     const sendOTP = async () => {
         setLoading(true); // Show the loading spinner
         try {
-            await axios.post(`/otp`, { email });
+            // TODO: finish the scheme for SDLC (re: dev vs prod)
+            await axios.post(`/dev/otp`, { email });
 
             setWaitingForOtp(true); // Show the OTP input field
 
@@ -39,7 +40,7 @@ export default function App() {
 
     const login = async () => {
         try {
-            const response = await axios.post(`/otp-confirm`, { email, token });
+            const response = await axios.post(`/dev/otp-confirm`, { email, token });
             if (response.status === 200) {
                 setAuth(true); // Show the OTP input field
                 setData(response.data);
