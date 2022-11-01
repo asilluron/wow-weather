@@ -11,6 +11,12 @@ AWS.config.update({
 
 const ses = new AWS.SES({ apiVersion: '2010-12-01' });
 
+const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'text/plain'
+}
+
+
 // TODO: move to lib 
 const sendEmail = (to: string, subject: string, message: string, from: any) => {
     const params = {
@@ -78,7 +84,7 @@ export default (event: any, context: any, callback: any) => {
             const errMsg = JSON.stringify(err.message);
             reject({
                 statusCode: 500,
-                headers: { 'Content-Type': 'text/plain' },
+                headers,
                 body: {
                     errMsg
                 }
@@ -86,7 +92,7 @@ export default (event: any, context: any, callback: any) => {
         } else {
             resolve({
                 statusCode: 200,
-                headers: { 'Content-Type': 'text/plain' },
+                headers,
                 body: `OTP sent to ${data.email}`
             });
         }
@@ -95,7 +101,7 @@ export default (event: any, context: any, callback: any) => {
     dbPromise.catch((err: any) => {
         callback(null, {
             statusCode: 500,
-            headers: { 'Content-Type': 'text/plain' },
+            headers,
             body: `Error while sending OTP ${err.message}`
         });
     });
@@ -115,7 +121,7 @@ export default (event: any, context: any, callback: any) => {
                 console.error(err);
                 callback(null, {
                     statusCode: 500,
-                    headers: { 'Content-Type': 'text/plain' },
+                    headers,
                     body: `Error while sending OTP ${err.message}`
                 });
             });

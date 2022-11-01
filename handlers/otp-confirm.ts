@@ -1,10 +1,18 @@
 const AWS = require('aws-sdk');
 const JWT = require('jsonwebtoken');
 const axios = require('axios');
+const errorHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'text/plain'
+}
 
+const headers = {
+    'Access-Control-Allow-Origin': '*'
+}
 
 export default async (event: any) => {
-    let currentIp = event.requestContext.http.sourceIp;
+    console.log(event);
+    let currentIp = event.requestContext.identity.sourceIp;
 
     console.log('currentIp is ', currentIp);
     if (currentIp.indexOf("127.0.0.1") >= -1) {
@@ -20,13 +28,12 @@ export default async (event: any) => {
             body: `Bad request: ${e.message}, got: ${event.body}`,
         });
     }
-    console.log('Got Data', data);
 
     if (!data.email || !data.token) {
         console.log('Missing email or token');
         return Promise.resolve({
             statusCode: 400,
-            headers: { 'Content-Type': 'text/plain' },
+            headers: errorHeaders,
             body: 'Bad request: email and token are required'
         });
     }
@@ -82,7 +89,7 @@ export default async (event: any) => {
             full_line
         };
 
-        return Promise.resolve(response);
+        return Promise.resolve({ statusCode: 200, body: JSON.stringify(response), headers });
 
     } catch (err) {
         // TODO: fix the error message response codes
@@ -90,7 +97,7 @@ export default async (event: any) => {
             console.error(err);
             return Promise.resolve({
                 statusCode: 500,
-                headers: { 'Content-Type': 'text/plain' },
+                headers: errorHeaders,
                 body: JSON.stringify(err)
             });
         }
