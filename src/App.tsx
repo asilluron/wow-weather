@@ -3,13 +3,10 @@ import React, { useState } from "react";
 import axios from 'axios';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import Header from './components/Header';
 
 
 
-
-/**
- * Our Web Application
- */
 export default function App() {
     const [waitingForOtp, setWaitingForOtp] = useState(false); // Are we waiting for an OTP? If so, show the OTP input field
     const [loading, setLoading] = useState(false); // Are we loading? If so, show a loading spinner
@@ -35,6 +32,7 @@ export default function App() {
             console.error(err);
             setLoading(false);
             // Show a snackbar or something
+            alert('Failed to send OTP');
         }
 
     };
@@ -63,47 +61,51 @@ export default function App() {
     }
 
     if (auth) {
-        return <div className="App">
-            <header className="App-header">
-                <h1 className="App-title">Owen Wilson Weather Generator</h1>
-            </header>
+        return (
             <div className="weather-container">
-                <img className="weather-image" src={data.poster}></img>
-                <p className="weather-quote">{data.full_line}</p>
-                <p className="weather-forecast">{data.forecast}</p>
-            </div>
-        </div>;
+                <img className="weather-image" src={data.poster || "https://images.ctfassets.net/bs8ntwkklfua/5MTYDabi9XISR4rMJbUhf6/bc3dd8e30c7662aed5d8db6c6be16af7/Are_You_Here_Poster.jpg"}></img>
+                <p className="weather-quote">{data.full_line || "Oh, wow. Thank you for that."}</p>
+                <p className="weather-forecast">{data.forecast || "Unknown error while getting weather!"}</p>
+            </div>);
     }
 
-    return (
-        <div className="App">
-            <header className="App-header">
-                <h1 className="App-title">Owen Wilson Weather Generator</h1>
-            </header>
-            {!waitingForOtp ? <> <p className="App-intro">
-                Enter your email address to get your weather forecast.
-            </p>
-                <TextField
-                    onInput={(e: any) => setEmail(e.target.value)}
-                    required
-                    id="outlined-required"
-                    label="Email Address"
-                />
-                <br></br>
-                <br></br>
-                <Button onClick={() => sendOTP()} variant="contained">Submit</Button></> : <>
+    if (waitingForOtp) {
+        return (
+            <div className="App">
+                <Header />
+                <p className="App-intro">
+                    Enter the OTP code from your email.
+                </p>
                 <div>
                     <TextField
                         onInput={(e: any) => setToken(e.target.value)}
                         required
-                        id="outlined-required"
+                        id="otp"
                         label="OTP from Email"
                     />
+                    <br></br>
+                    <br></br>
                     <Button onClick={() => login()} variant="contained">Submit</Button>
                 </div>
+            </div>
+        );
+    }
 
-            </>}
-
+    return (
+        <div className="App">
+            <Header />
+            <p className="App-intro">
+                Enter your email address to get your weather forecast.
+            </p>
+            <TextField
+                onInput={(e: any) => setEmail(e.target.value)}
+                required
+                id="email"
+                label="Email Address"
+            />
+            <br></br>
+            <br></br>
+            <Button onClick={() => sendOTP()} variant="contained">Submit</Button>
         </div>
     );
 }

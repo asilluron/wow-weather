@@ -17,7 +17,8 @@ provider:
   timeout: 6
   logRetentionInDays: 7
   lambdaHashingVersion: 20201221 # for upcoming Serverless v3
-
+  httpApi:
+    cors: true
   apiGateway:
     shouldStartNameWithService: true # for upcoming Serverless v3
 
