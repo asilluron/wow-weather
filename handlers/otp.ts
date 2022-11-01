@@ -33,13 +33,7 @@ const sendEmail = (to: string, subject: string, message: string, from: any) => {
         Source: from ? from : process.env.AWS_SES_FROM,
     };
 
-    ses.sendEmail(params, (err: Error, data: string) => {
-        if (err) {
-            return console.log(err, err.stack);
-        } else {
-            console.log("Email sent.", data);
-        }
-    });
+    return ses.sendEmail(params).promise();
 };
 
 export default (event: any, context: any, callback: any) => {
@@ -91,7 +85,7 @@ export default (event: any, context: any, callback: any) => {
             });
         } else {
             resolve({
-                statusCode: 500,
+                statusCode: 200,
                 headers: { 'Content-Type': 'text/plain' },
                 body: `OTP sent to ${data.email}`
             });
@@ -107,14 +101,24 @@ export default (event: any, context: any, callback: any) => {
     });
 
     dbPromise.then((result: any) => {
+        console.log('db: ', result);
         // Do not attempt email for malformed POST
         if (result.statusCode !== 200) {
             callback(null, result);
+            return
         } else {
-            sendEmail(data.email, 'WOW Weather One Time Pass', message, process.env.AWS_SES_FROM);
-
-            // TODO: check if email sent successfully
-            callback(null, result);
+            console.log('Sending email from: ', process.env.AWS_SES_FROM);
+            sendEmail(data.email, 'WOW Weather One Time Pass', message, process.env.AWS_SES_FROM).then((sesResult: any) => {
+                console.log('Email sent', sesResult);
+                callback(null, result);
+            }).catch((err: any) => {
+                console.error(err);
+                callback(null, {
+                    statusCode: 500,
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: `Error while sending OTP ${err.message}`
+                });
+            });
         }
-    });
+    })
 };
