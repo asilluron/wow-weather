@@ -113,7 +113,6 @@ export default (event: any, context: any, callback: any) => {
             callback(null, result);
             return
         } else {
-            console.log('Sending email from: ', process.env.AWS_SES_FROM);
             sendEmail(data.email, 'WOW Weather One Time Pass', message, process.env.AWS_SES_FROM).then((sesResult: any) => {
                 console.log('Email sent', sesResult);
                 callback(null, result);

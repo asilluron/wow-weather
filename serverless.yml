@@ -21,7 +21,18 @@ provider:
     cors: true
   apiGateway:
     shouldStartNameWithService: true # for upcoming Serverless v3
-
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "Fn::GetAtt": [ "OTPTable", "Arn" ]
   environment:
     SERVERLESS_PROJECT: ${self:service}
     SERVERLESS_REGION: ${self:provider.region}
@@ -57,7 +68,7 @@ functions:
           path: /{any+}
           method: any
           cors: true
-  otp:
+  otp:  
     events:
       - http:
           path: /otp
@@ -66,6 +77,7 @@ functions:
     handler: handler.otp
     environment:
       OTP_TABLE: ${self:custom.tableNameOTP}
+      AWS_SES_FROM: ${param:AWS_SES_FROM}
   otpConfirm:
     events:
       - http:
@@ -75,6 +87,9 @@ functions:
     handler: handler.otpConfirm
     environment:
       OTP_TABLE: ${self:custom.tableNameOTP}
+      JWT_KEY: ${param:JWT_KEY}
+      DEMO_IP: ${param:DEMO_IP}
+
 
 custom:
   tableNameOTP: ${self:provider.stage}-otp
