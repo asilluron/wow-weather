@@ -58,14 +58,20 @@ functions:
           method: any
           cors: true
   otp:
-    events: 
-      - httpApi: 'POST /otp'
+    events:
+      - http:
+          path: /otp
+          method: post
+          cors: true
     handler: handler.otp
     environment:
       OTP_TABLE: ${self:custom.tableNameOTP}
   otpConfirm:
-    events: 
-      - httpApi: 'POST /otp-confirm'
+    events:
+      - http:
+          path: /otp-confirm
+          method: post
+          cors: true
     handler: handler.otpConfirm
     environment:
       OTP_TABLE: ${self:custom.tableNameOTP}
